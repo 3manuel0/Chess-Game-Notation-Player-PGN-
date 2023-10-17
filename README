@@ -1,0 +1,1 @@
+a site that can get the pgn data from the url that data writing in a format '?/whitemove-balckmove-........-score' and turns it into a display of the game, this is a project I worked on for a client.
