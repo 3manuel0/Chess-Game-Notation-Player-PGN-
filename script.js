@@ -289,16 +289,27 @@ let fen = "";
 
 // get the fen string from the board
 const getFen = () => {
-  const lines = [
-    [0, 7],
-    [8, 15],
-    [16, 23],
-    [24, 31],
-    [32, 39],
-    [40, 47],
-    [48, 55],
-    [56, 63],
-  ];
+  const lines = fliped
+    ? [
+        [56, 63],
+        [48, 55],
+        [40, 47],
+        [32, 39],
+        [24, 31],
+        [16, 23],
+        [8, 15],
+        [0, 7],
+      ]
+    : [
+        [0, 7],
+        [8, 15],
+        [16, 23],
+        [24, 31],
+        [32, 39],
+        [40, 47],
+        [48, 55],
+        [56, 63],
+      ];
   const pieceTostring = {
     "w-rook": "R",
     "w-knight": "N",
@@ -313,26 +324,42 @@ const getFen = () => {
     "b-queen": "q",
     "b-pawn": "p",
   };
-  const rooksStartingPosition = {
-    0: ["q", chessPieces["b-rook"]],
-    7: ["k", chessPieces["b-rook"]],
-    56: ["Q", chessPieces["w-rook"]],
-    63: ["K", chessPieces["w-rook"]],
-  };
+  const rooksStartingPosition = !fliped
+    ? {
+        0: ["q", chessPieces["b-rook"]],
+        7: ["k", chessPieces["b-rook"]],
+        56: ["Q", chessPieces["w-rook"]],
+        63: ["K", chessPieces["w-rook"]],
+      }
+    : {
+        0: ["Q", chessPieces["w-rook"]],
+        7: ["K", chessPieces["w-rook"]],
+        56: ["q", chessPieces["b-rook"]],
+        63: ["k", chessPieces["b-rook"]],
+      };
   // cheking if a rook did move
   Object.entries(rooksStartingPosition).forEach((pos) => {
     const [key, value] = pos;
-    console.log(key, value[1]);
     if (squares[key].innerHTML != value[1]) {
       canCastle[value[0]] = false;
     }
   });
-  if (squares[4].innerHTML != chessPieces["b-king"]) {
-    canCastle["k"] = false;
-    canCastle["q"] = false;
-  } else if (squares[60].innerHTML != chessPieces["w-king"]) {
-    canCastle["K"] = false;
-    canCastle["Q"] = false;
+  if (!fliped) {
+    if (squares[4].innerHTML != chessPieces["b-king"]) {
+      canCastle["k"] = false;
+      canCastle["q"] = false;
+    } else if (squares[60].innerHTML != chessPieces["w-king"]) {
+      canCastle["K"] = false;
+      canCastle["Q"] = false;
+    }
+  } else {
+    if (squares[59].innerHTML != chessPieces["b-king"]) {
+      canCastle["k"] = false;
+      canCastle["q"] = false;
+    } else if (squares[3].innerHTML != chessPieces["w-king"]) {
+      canCastle["K"] = false;
+      canCastle["Q"] = false;
+    }
   }
   let castelingString = "";
   Object.keys(canCastle).forEach((key) => {
@@ -345,13 +372,27 @@ const getFen = () => {
   let emptySquares;
   lines.forEach((line) => {
     emptySquares = 0;
-    for (i = line[0]; i <= line[1]; i++) {
-      if (squares[i].innerHTML == "") {
-        emptySquares += 1;
-      } else if (squares[i].innerHTML != "") {
-        fen += emptySquares != 0 ? emptySquares : "";
-        emptySquares = 0;
-        fen += pieceTostring[getKeyByValue(chessPieces, squares[i].innerHTML)];
+    if (!fliped) {
+      for (i = line[0]; i <= line[1]; i++) {
+        if (squares[i].innerHTML == "") {
+          emptySquares += 1;
+        } else if (squares[i].innerHTML != "") {
+          fen += emptySquares != 0 ? emptySquares : "";
+          emptySquares = 0;
+          fen +=
+            pieceTostring[getKeyByValue(chessPieces, squares[i].innerHTML)];
+        }
+      }
+    } else {
+      for (i = line[1]; i >= line[0]; i--) {
+        if (squares[i].innerHTML == "") {
+          emptySquares += 1;
+        } else if (squares[i].innerHTML != "") {
+          fen += emptySquares != 0 ? emptySquares : "";
+          emptySquares = 0;
+          fen +=
+            pieceTostring[getKeyByValue(chessPieces, squares[i].innerHTML)];
+        }
       }
     }
     fen += emptySquares != 0 ? emptySquares : "";
@@ -379,6 +420,7 @@ const getKeyByValue = (object, value) => {
 
 // resetting the board and puting every peice in its place
 const resetBoard = () => {
+  fen = "";
   chessBoardOriantation();
   Object.keys(canCastle).forEach((key) => {
     canCastle[key] = true;
@@ -1144,8 +1186,3 @@ const getResponse = async (fen) => {
   //   ).innerHTML += `<span class='move' >${JSON.stringify(bestmoves[i])}</span>`;
   // }
 };
-for (let i = 0; i < squares.length; i++) {
-  squares[i].onclick = () => {
-    console.log(i);
-  };
-}
