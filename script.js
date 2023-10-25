@@ -394,7 +394,8 @@ const resetBoard = () => {
       }
     });
   }
-  document.querySelector("#FEN").innerHTML = "";
+  getFen();
+  document.querySelector("#FEN").innerHTML = fen;
 };
 
 // Plays The moves

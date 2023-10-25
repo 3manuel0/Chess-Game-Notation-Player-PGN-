@@ -8,7 +8,7 @@ body {
   background-color: #1e2a3a;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 /* styling the container */
 .container {
@@ -45,7 +45,7 @@ button:hover {
 
 /* creating the chess board 8 by 8 64 total squares created with grid */
 .chess-board {
-  width: 50%;
+  width: 60%;
   max-width: 600px;
   aspect-ratio: 1/1;
   display: grid;
@@ -71,11 +71,10 @@ button:hover {
 
 /* styling the game data area */
 .game-data {
-  width: 50%;
-  max-height: 400px;
+  width: 40%;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: 1rem;
   align-items: center;
 }
 #game-data,
@@ -128,8 +127,12 @@ button:hover {
 }
 
 #FEN {
-  padding: 1rem;
+  padding: 0.4rem;
+  margin: 0.5rem 0 0.5rem 0;
   color: white;
+  background-color: #324154;
+  border-radius: 10px;
+  font-size: 1.2rem;
 }
 /* styling the div that holdss the buttons */
 .buttons {
@@ -139,7 +142,7 @@ button:hover {
 }
 
 /* changin the styling of some elements after we get below a width of 900px */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1000px) {
   .container {
     flex-direction: column;
     padding: 1rem;
@@ -180,6 +183,9 @@ button:hover {
   .score,
   .count {
     font-size: 1rem;
+  }
+  #FEN {
+    font-size: 0.9rem;
   }
   button {
     margin-top: 0;
