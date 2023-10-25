@@ -1,69 +1,144 @@
 // numbering the board based on the index of each block on the html
-const chessBoardNumbers = {
-  0: "a8",
-  1: "b8",
-  2: "c8",
-  3: "d8",
-  4: "e8",
-  5: "f8",
-  6: "g8",
-  7: "h8",
-  8: "a7",
-  9: "b7",
-  10: "c7",
-  11: "d7",
-  12: "e7",
-  13: "f7",
-  14: "g7",
-  15: "h7",
-  16: "a6",
-  17: "b6",
-  18: "c6",
-  19: "d6",
-  20: "e6",
-  21: "f6",
-  22: "g6",
-  23: "h6",
-  24: "a5",
-  25: "b5",
-  26: "c5",
-  27: "d5",
-  28: "e5",
-  29: "f5",
-  30: "g5",
-  31: "h5",
-  32: "a4",
-  33: "b4",
-  34: "c4",
-  35: "d4",
-  36: "e4",
-  37: "f4",
-  38: "g4",
-  39: "h4",
-  40: "a3",
-  41: "b3",
-  42: "c3",
-  43: "d3",
-  44: "e3",
-  45: "f3",
-  46: "g3",
-  47: "h3",
-  48: "a2",
-  49: "b2",
-  50: "c2",
-  51: "d2",
-  52: "e2",
-  53: "f2",
-  54: "g2",
-  55: "h2",
-  56: "a1",
-  57: "b1",
-  58: "c1",
-  59: "d1",
-  60: "e1",
-  61: "f1",
-  62: "g1",
-  63: "h1",
+let chessBoardNumbers;
+
+// if the board is fliped
+let fliped = false;
+
+// function to change the board's oriantation based on if it's fliped or not
+const chessBoardOriantation = () => {
+  let normalChessBoard = {
+    0: "a8",
+    1: "b8",
+    2: "c8",
+    3: "d8",
+    4: "e8",
+    5: "f8",
+    6: "g8",
+    7: "h8",
+    8: "a7",
+    9: "b7",
+    10: "c7",
+    11: "d7",
+    12: "e7",
+    13: "f7",
+    14: "g7",
+    15: "h7",
+    16: "a6",
+    17: "b6",
+    18: "c6",
+    19: "d6",
+    20: "e6",
+    21: "f6",
+    22: "g6",
+    23: "h6",
+    24: "a5",
+    25: "b5",
+    26: "c5",
+    27: "d5",
+    28: "e5",
+    29: "f5",
+    30: "g5",
+    31: "h5",
+    32: "a4",
+    33: "b4",
+    34: "c4",
+    35: "d4",
+    36: "e4",
+    37: "f4",
+    38: "g4",
+    39: "h4",
+    40: "a3",
+    41: "b3",
+    42: "c3",
+    43: "d3",
+    44: "e3",
+    45: "f3",
+    46: "g3",
+    47: "h3",
+    48: "a2",
+    49: "b2",
+    50: "c2",
+    51: "d2",
+    52: "e2",
+    53: "f2",
+    54: "g2",
+    55: "h2",
+    56: "a1",
+    57: "b1",
+    58: "c1",
+    59: "d1",
+    60: "e1",
+    61: "f1",
+    62: "g1",
+    63: "h1",
+  };
+  let flipedChessBoard = {
+    0: "h1",
+    1: "g1",
+    2: "f1",
+    3: "e1",
+    4: "d1",
+    5: "c1",
+    6: "b1",
+    7: "a1",
+    8: "h2",
+    9: "g2",
+    10: "f2",
+    11: "e2",
+    12: "d2",
+    13: "c2",
+    14: "b2",
+    15: "a2",
+    16: "h3",
+    17: "g3",
+    18: "f3",
+    19: "e3",
+    20: "d3",
+    21: "c3",
+    22: "b3",
+    23: "a3",
+    24: "h4",
+    25: "g4",
+    26: "f4",
+    27: "e4",
+    28: "d4",
+    29: "c4",
+    30: "b4",
+    31: "a4",
+    32: "h5",
+    33: "g5",
+    34: "f5",
+    35: "e5",
+    36: "d5",
+    37: "c5",
+    38: "b5",
+    39: "a5",
+    40: "h6",
+    41: "g6",
+    42: "f6",
+    43: "e6",
+    44: "d6",
+    45: "c6",
+    46: "b6",
+    47: "a6",
+    48: "h7",
+    49: "g7",
+    50: "f7",
+    51: "e7",
+    52: "d7",
+    53: "c7",
+    54: "b7",
+    55: "a7",
+    56: "h8",
+    57: "g8",
+    58: "f8",
+    59: "e8",
+    60: "d8",
+    61: "c8",
+    62: "b8",
+    63: "a8",
+  };
+  chessBoardNumbers = fliped ? flipedChessBoard : normalChessBoard;
 };
 
 // chess pieces as html elements
@@ -182,6 +257,15 @@ const possibleMoves = {
   ],
 };
 
+// variable to know if the casteling is available capital is white Q for queen's side K for king's side
+let canCastle = {
+  K: true,
+  Q: true,
+  k: true,
+  q: true,
+};
+
+let halfMoveCount = 0;
 // letters index of the board
 const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 // numbers index of the board
@@ -200,6 +284,93 @@ let pgnData = [];
 //if the game is playing
 let playing = false;
 
+// the Forsyth-Edwards Notation string
+let fen = "";
+
+// get the fen string from the board
+const getFen = () => {
+  const lines = [
+    [0, 7],
+    [8, 15],
+    [16, 23],
+    [24, 31],
+    [32, 39],
+    [40, 47],
+    [48, 55],
+    [56, 63],
+  ];
+  const pieceTostring = {
+    "w-rook": "R",
+    "w-knight": "N",
+    "w-bishop": "B",
+    "w-king": "K",
+    "w-queen": "Q",
+    "w-pawn": "P",
+    "b-rook": "r",
+    "b-knight": "n",
+    "b-bishop": "b",
+    "b-king": "k",
+    "b-queen": "q",
+    "b-pawn": "p",
+  };
+  const rooksStartingPosition = {
+    0: ["q", chessPieces["b-rook"]],
+    7: ["k", chessPieces["b-rook"]],
+    56: ["Q", chessPieces["w-rook"]],
+    63: ["K", chessPieces["w-rook"]],
+  };
+  // cheking if a rook did move
+  Object.entries(rooksStartingPosition).forEach((pos) => {
+    const [key, value] = pos;
+    console.log(key, value[1]);
+    if (squares[key].innerHTML != value[1]) {
+      canCastle[value[0]] = false;
+    }
+  });
+  if (squares[4].innerHTML != chessPieces["b-king"]) {
+    canCastle["k"] = false;
+    canCastle["q"] = false;
+  } else if (squares[60].innerHTML != chessPieces["w-king"]) {
+    canCastle["K"] = false;
+    canCastle["Q"] = false;
+  }
+  let castelingString = "";
+  Object.keys(canCastle).forEach((key) => {
+    if (canCastle[key] == true) {
+      castelingString += key;
+    }
+  });
+  castelingString = castelingString == "" ? "-" : castelingString;
+  let turn = getIndex() >= 0 ? (getIndex() % 2 == 0 ? "b" : "w") : "w";
+  let emptySquares;
+  lines.forEach((line) => {
+    emptySquares = 0;
+    for (i = line[0]; i <= line[1]; i++) {
+      if (squares[i].innerHTML == "") {
+        emptySquares += 1;
+      } else if (squares[i].innerHTML != "") {
+        fen += emptySquares != 0 ? emptySquares : "";
+        emptySquares = 0;
+        fen += pieceTostring[getKeyByValue(chessPieces, squares[i].innerHTML)];
+      }
+    }
+    fen += emptySquares != 0 ? emptySquares : "";
+    fen += "/";
+  });
+  fen =
+    fen.slice(0, -1) +
+    " " +
+    turn +
+    " " +
+    castelingString +
+    " " +
+    "-" +
+    " " +
+    halfMoveCount +
+    " " +
+    Math.round((getIndex() + 2) / 2);
+};
+
 // function to exctract key by having values
 //  this is useful to get the index of which block based on the chessBoardNumbers variable
 const getKeyByValue = (object, value) => {
@@ -208,6 +379,10 @@ const getKeyByValue = (object, value) => {
 
 // resetting the board and puting every peice in its place
 const resetBoard = () => {
+  chessBoardOriantation();
+  Object.keys(canCastle).forEach((key) => {
+    canCastle[key] = true;
+  });
   for (let i = 0; i < squares.length; i++) {
     // giving every square and empty string value to remove everything
     squares[i].innerHTML = "";
@@ -219,16 +394,20 @@ const resetBoard = () => {
       }
     });
   }
+  document.querySelector("#FEN").innerHTML = "";
 };
 
 // Plays The moves
 const playMoves = (move, Index) => {
+  fen = "";
+  halfMoveCount += 1;
   move = move.replaceAll("+", "");
   move = move.replaceAll("#", "");
   move = move.replaceAll("/", "");
   switch (move.length) {
     case 2:
       pawnMoves(move, Index);
+      halfMoveCount = 0;
       break;
     case 3:
       switch (move[0]) {
@@ -271,6 +450,7 @@ const playMoves = (move, Index) => {
       break;
     case 4:
       if (move.includes("x")) {
+        halfMoveCount = 0;
         if (letters.includes(move[0])) {
           if (Index % 2 == 0) {
             pawnCapturing(move, "w");
@@ -394,6 +574,8 @@ const playMoves = (move, Index) => {
       castling(move, "b");
     }
   }
+  getFen();
+  document.querySelector("#FEN").innerHTML = fen;
 };
 
 // promotion
@@ -512,7 +694,7 @@ const pawnMoves = (move, Index) => {
       ) {
         squares[
           getKeyByValue(chessBoardNumbers, move.split("")[0] + i)
-        ].innerHTML = " ";
+        ].innerHTML = "";
       }
     }
   } else {
@@ -525,7 +707,7 @@ const pawnMoves = (move, Index) => {
       ) {
         squares[
           getKeyByValue(chessBoardNumbers, move.split("")[0] + i)
-        ].innerHTML = " ";
+        ].innerHTML = "";
       }
     }
   }
@@ -673,6 +855,13 @@ const rookMoves = (move, color) => {
 
 // the castling move
 const castling = (move, color) => {
+  if (color == "b") {
+    canCastle["k"] = false;
+    canCastle["q"] = false;
+  } else if (color == "w") {
+    canCastle["K"] = false;
+    canCastle["Q"] = false;
+  }
   if (move == "O-O") {
     if (color == "b") {
       squares[getKeyByValue(chessBoardNumbers, "h8")].innerHTML = "";
@@ -844,7 +1033,19 @@ const autoplay = (i) => {
     }, 1000);
   }
 };
-
+document.querySelector("#flip").onclick = () => {
+  fliped ? (fliped = false) : (fliped = true);
+  let i = getIndex();
+  resetBoard();
+  let move = document.querySelectorAll(".move")[i];
+  if (i == 0) {
+    playMoves(move.innerHTML, i);
+  } else {
+    for (let x = 0; x <= i; x++) {
+      playMoves(pgnData[x], x);
+    }
+  }
+};
 // start the autoplay when after clicking on autoplay
 document.querySelector("#autoplay").onclick = () => {
   playing = true;
@@ -908,3 +1109,42 @@ document.querySelector("#previous").onclick = () => {
 window.onload = (event) => {
   resetBoard();
 };
+
+// get best moves
+const getResponse = async (fen) => {
+  let getData;
+  await fetch(
+    `https://www.chessdb.cn/cdb.php?action=queryall&board=${fen}&json=1`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      getData = data;
+    });
+  let count = 1;
+  console.log(JSON.stringify(getData));
+  console.log(JSON.stringify(getData.moves));
+  let bestmoves = await getData.moves;
+  document.querySelector("#best-moves").innerHTML = "";
+  // for (let i = 0; i < (await bestmoves.length); i++) {
+  //   if (i % 2 == 0) {
+  //     document.querySelector(
+  //       "#best-moves"
+  //     ).innerHTML += `<span class='count'>${count}.</span>`;
+  //     count++;
+  //   }
+  //   console.log(bestmoves[i]);
+  //   document.querySelector(
+  //     "#best-moves"
+  //   ).innerHTML += `<span class='move' >${JSON.stringify(bestmoves[i])}</span>`;
+  // }
+};
+for (let i = 0; i < squares.length; i++) {
+  squares[i].onclick = () => {
+    console.log(i);
+  };
+}

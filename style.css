@@ -4,11 +4,16 @@
   margin: 0;
   font-family: -apple-system, sans-serif;
 }
-
-/* styling the body */
 body {
+  background-color: #1e2a3a;
   display: flex;
+  flex-direction: column;
   padding: 2rem;
+}
+/* styling the container */
+.container {
+  display: flex;
+  padding: 1rem;
   align-items: center;
   justify-content: space-around;
   background-color: #1e2a3a;
@@ -32,6 +37,7 @@ button {
   border-radius: 5%;
   border: none;
   margin: 0.5rem 0.6rem 0 0.6rem;
+  position: relative;
 }
 button:hover {
   cursor: pointer;
@@ -72,7 +78,8 @@ button:hover {
   padding: 2rem;
   align-items: center;
 }
-#game-data {
+#game-data,
+#best-moves {
   background-color: #324154;
   color: white;
   padding: 0.5rem;
@@ -82,7 +89,9 @@ button:hover {
   white-space: normal;
   display: inline-block;
 }
-
+#best-moves {
+  margin-top: 0.6rem;
+}
 /* styling the moves and the scor and the move count*/
 .move,
 .score {
@@ -105,6 +114,23 @@ button:hover {
   background-color: rgb(100, 100, 100);
 }
 
+#flip {
+  padding: 1.2rem;
+  margin: 0;
+  margin-left: 0.7rem;
+}
+
+#flip > img {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#FEN {
+  padding: 1rem;
+  color: white;
+}
 /* styling the div that holdss the buttons */
 .buttons {
   display: flex;
@@ -114,7 +140,7 @@ button:hover {
 
 /* changin the styling of some elements after we get below a width of 900px */
 @media screen and (max-width: 900px) {
-  body {
+  .container {
     flex-direction: column;
     padding: 1rem;
   }
@@ -133,6 +159,10 @@ button:hover {
     width: 100%;
     order: 2;
     margin-top: 0.9rem;
+  }
+  #flip {
+    padding: 1rem;
+    margin-top: 0.625rem;
   }
   .move,
   .score {
