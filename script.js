@@ -274,7 +274,7 @@ const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
 // extracting data from url
 const url = window.location.href;
 const pgnString = url.split("?")[1];
-const extractedData = pgnString.split("-");
+const extractedData = pgnString != undefined ? pgnString.split("-") : [];
 // getting all the squares of the board
 const squares = document.querySelectorAll(".square");
 
@@ -437,6 +437,7 @@ const resetBoard = () => {
     });
   }
   getFen();
+  getResponse(fen);
   document.querySelector("#FEN").innerHTML = fen;
 };
 
@@ -1018,9 +1019,12 @@ for (let i = 0; i < pgnData.length; i++) {
 }
 
 // displaying the score
-document.querySelector(
-  "#game-data"
-).innerHTML += `<span class='score'>${score}</span>`;
+document.querySelector("#game-data").innerHTML += `<span class='score'>${
+  pgnData[pgnData.length - 2] != undefined &&
+  pgnData[pgnData.length - 1] != undefined
+    ? score
+    : "no data in the URL"
+}</span>`;
 
 // getting the index of the current move
 const getIndex = () => {
@@ -1156,9 +1160,7 @@ window.onload = (event) => {
 // get best moves
 const getResponse = async (fen) => {
   let getData;
-  await fetch(
-    `https://www.chessdb.cn/cdb.php?action=queryall&board=${fen}&json=1`
-  )
+  await fetch(`https://chess-evaluation-api.onrender.com/${fen}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
@@ -1173,16 +1175,16 @@ const getResponse = async (fen) => {
   console.log(JSON.stringify(getData.moves));
   let bestmoves = await getData.moves;
   document.querySelector("#best-moves").innerHTML = "";
-  // for (let i = 0; i < (await bestmoves.length); i++) {
-  //   if (i % 2 == 0) {
-  //     document.querySelector(
-  //       "#best-moves"
-  //     ).innerHTML += `<span class='count'>${count}.</span>`;
-  //     count++;
-  //   }
-  //   console.log(bestmoves[i]);
-  //   document.querySelector(
-  //     "#best-moves"
-  //   ).innerHTML += `<span class='move' >${JSON.stringify(bestmoves[i])}</span>`;
-  // }
+  for (let i = 0; i < (await bestmoves.length); i++) {
+    if (i % 2 == 0) {
+      document.querySelector(
+        "#best-moves"
+      ).innerHTML += `<span class='count'>${count}.</span>`;
+      count++;
+    }
+    console.log(bestmoves[i]);
+    document.querySelector(
+      "#best-moves"
+    ).innerHTML += `<span class='move' >${JSON.stringify(bestmoves[i])}</span>`;
+  }
 };
