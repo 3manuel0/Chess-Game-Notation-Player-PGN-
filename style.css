@@ -3,12 +3,29 @@
 *::after {
   margin: 0;
   font-family: -apple-system, sans-serif;
+  box-sizing: inherit;
 }
 body {
   background-color: #1e2a3a;
   display: flex;
   flex-direction: column;
-  padding: 2rem 1rem;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border: 2px solid grey;
+  border-radius: 10px;
+  background-color: #1e2a3a;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #141821;
+  border-radius: 10px;
 }
 /* styling the container */
 .container {
@@ -24,20 +41,27 @@ img {
   width: 100%;
   height: 100%;
   position: absolute;
+  z-index: 1;
 }
 
 /* styling buttons */
 button {
-  margin-top: 1rem;
   font-size: 1rem;
   padding: 0.7rem;
   font-weight: 600;
   background-color: #f2d23c;
   color: #324154;
-  border-radius: 5%;
+  border-radius: 50%;
   border: none;
   margin: 0.5rem 0.6rem 0 0.6rem;
   position: relative;
+  text-align: center;
+}
+#autoplay {
+  border-radius: 20px;
+}
+#pause {
+  border-radius: 20px;
 }
 button:hover {
   cursor: pointer;
@@ -45,10 +69,11 @@ button:hover {
 
 /* creating the chess board 8 by 8 64 total squares created with grid */
 .chess-board {
-  width: 60%;
-  max-width: 600px;
   aspect-ratio: 1/1;
+  max-width: 600px;
   display: grid;
+  width: 50%;
+  aspect-ratio: 1/1;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
@@ -68,6 +93,13 @@ button:hover {
 .chess-board .white {
   background-color: #f2d23c;
 }
+.highlight {
+  background-color: rgb(50, 205, 50, 0.4);
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  z-index: 0;
+}
 
 /* styling the game data area */
 .game-data {
@@ -76,10 +108,17 @@ button:hover {
   flex-direction: column;
   padding: 1rem;
   align-items: center;
+  position: relative;
+}
+#game-data {
+  height: 250px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  margin-top: 2rem;
 }
 #game-data,
 #best-moves {
-  background-color: #324154;
+  background-color: #344454;
   color: white;
   padding: 0.5rem;
   border-radius: 10px;
@@ -89,25 +128,72 @@ button:hover {
   display: inline-block;
 }
 #best-moves {
-  margin-top: 0.6rem;
+  word-break: keep-all;
+  height: 100%;
+  width: 100%;
+  margin-bottom: 0.2rem;
+  padding: 0.5rem;
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
 }
-/* styling the moves and the scor and the move count*/
-.move,
-.score {
+#best-moves button {
+  width: 100%;
+  margin: 0;
+  height: 100%;
+  border-radius: 0;
+  background-color: transparent;
+  color: white;
+  font-size: 1.7rem;
+}
+#best-moves span {
   font-size: 1.2rem;
   margin: 0 0.2rem 0 0;
   padding: 0.2rem;
+}
+#best-moves span:first-child {
+  background-color: #f2d23c;
+  color: #324154;
+  border-radius: 20px;
+}
+#best-moves .score {
+  background-color: #101825e6;
+  border-radius: 17px;
+}
+/* styling the moves and the scor and the move count*/
+.move-set {
+  display: flex;
+}
+.moves {
+  border-bottom: 3px solid #7d7d7d;
+  width: 90%;
+  padding: 0.3rem;
+}
+.move,
+.score,
+#best-moves span {
+  font-size: 1.4rem;
+  margin: 0 0.2rem 0 0;
+  padding: 0.2rem;
+  font-weight: 600;
+}
+.move {
+  width: 75px;
+  display: inline-block;
 }
 .move:hover {
   cursor: pointer;
   background-color: rgb(100, 100, 100);
 }
 .count {
-  font-size: 1.2rem;
-  margin-left: 0.7rem;
-}
-.count:first-child {
-  margin: 0;
+  font-size: 1.3rem;
+  background-color: #1f2837;
+  min-width: 35px;
+  line-height: 1.5;
+  text-align: center;
+  color: #9ca4af;
+  font-weight: 600;
 }
 .selected {
   background-color: rgb(100, 100, 100);
@@ -115,7 +201,6 @@ button:hover {
 
 #flip {
   padding: 1.2rem;
-  margin: 0;
   margin-left: 0.7rem;
 }
 
@@ -124,32 +209,76 @@ button:hover {
   bottom: 0;
   left: 0;
   right: 0;
+  margin: auto;
+  width: 90%;
+  aspect-ratio: 1;
 }
 
 #FEN {
-  padding: 0.4rem;
-  margin: 0.5rem 0 0.5rem 0;
+  margin: 1rem 0 0.5rem 0;
   color: white;
-  background-color: #324154;
+  background-color: #344454;
   border-radius: 10px;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  word-break: break-all;
+  cursor: pointer;
+  font-weight: 600;
+  height: 80px;
+  padding: 1.2rem;
+  text-align: center;
+  line-height: 1.5;
 }
 /* styling the div that holdss the buttons */
 .buttons {
+  margin: 1rem 0 0 0;
   display: flex;
   justify-content: center;
   width: 100%;
 }
-
+.alert {
+  position: absolute;
+  top: 70%;
+  right: 0;
+  background: white;
+  padding: 1.2rem;
+  border-radius: 1rem;
+  display: none;
+  text-align: center;
+  line-break: anywhere;
+  font-size: 1rem;
+}
+.active {
+  display: block;
+  text-align: center;
+  animation: notification 0.5s ease-in-out;
+}
+.move-set:first-child .count {
+  border-top-left-radius: 28%;
+  border-top-right-radius: 28%;
+}
+.move-set:last-child(-1) {
+  border-bottom-left-radius: 28%;
+  border-bottom-right-radius: 28%;
+  color: #9ca4af;
+}
 /* changin the styling of some elements after we get below a width of 900px */
 @media screen and (max-width: 1000px) {
   .container {
     flex-direction: column;
-    padding: 1rem;
+    padding: 1rem 0;
+    margin: 0;
   }
   .chess-board {
     width: 80%;
-    min-width: 360px;
+  }
+  .buttons {
+    order: -1;
+    margin-bottom: 1rem;
+    justify-content: space-around;
+    width: 80%;
+  }
+  #flip {
+    margin: 0;
   }
   .game-data {
     width: 100%;
@@ -158,37 +287,57 @@ button:hover {
     padding: 0;
     margin-top: 0.9rem;
   }
+  #best-moves {
+    width: 80%;
+    margin-top: 1rem;
+    padding-inline: 0;
+    display: grid;
+    gap: 0.2rem;
+    text-align: center;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  }
+  #best-moves button {
+    font-size: 1.3rem;
+  }
+  #best-moves span {
+    font-size: 1rem;
+  }
   #game-data {
-    width: 100%;
-    order: 3;
-    margin-top: 0.9rem;
+    width: 80%;
+    margin-top: 1rem;
+    padding-inline: 0;
+  }
+  .move {
+    display: inline-block;
+    width: 60px;
+  }
+  #FEN {
+    width: 80%;
+    padding: 0.4rem;
+    font-size: 1rem;
+    height: auto;
+  }
+  button {
+    margin: 0;
+    padding: 0.5rem;
+  }
+}
+@media screen and (max-width: 350px) {
+  button {
+    padding: 0.3rem;
   }
   #flip {
     padding: 1rem;
-    margin-top: 0.625rem;
   }
-  .move,
-  .score {
-    margin-right: 0.1rem;
-    padding: 0.1rem;
+  .move {
+    width: 45px;
   }
-  .buttons {
-    width: auto;
-    order: 1;
+}
+@keyframes notification {
+  from {
+    right: -120%;
   }
-  .count {
-    margin-left: 0.5rem;
-  }
-  .move,
-  .score,
-  .count {
-    font-size: 1rem;
-  }
-  #FEN {
-    font-size: 0.9rem;
-    order: 2;
-  }
-  button {
-    margin-top: 0;
+  to {
+    right: 0;
   }
 }

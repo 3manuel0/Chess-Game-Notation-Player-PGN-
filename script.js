@@ -157,6 +157,13 @@ const chessPieces = {
   "b-pawn": '<img src="chess pieces/black-pawn.png">',
 };
 
+const highlight = "inset 0 0 0 1000px rgb(50, 205, 50, 0.4)";
+
+const resetHighlight = () => {
+  for (let i = 0; i < squares.length; i++) {
+    squares[i].style.boxShadow = "none";
+  }
+};
 // the starting poition of every piece on the board
 const startingPositions = {
   "w-pawn": ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
@@ -437,8 +444,10 @@ const resetBoard = () => {
     });
   }
   getFen();
-  getResponse(fen);
   document.querySelector("#FEN").innerHTML = fen;
+  document.querySelector(
+    "#best-moves"
+  ).innerHTML = `<button id="eval" onclick="getResponse()">Chess Engine Api</button>`;
 };
 
 // Plays The moves
@@ -545,7 +554,7 @@ const playMoves = (move, Index) => {
           promotion(move, "b");
         }
       }
-      if (letters.includes(move[1]) || numbers.includes(move[1])) {
+      if (letters.includes(move[1]) || numbers.includes(parseInt(move[1]))) {
         if (move[0] == "N") {
           if (Index % 2 == 0) {
             whichpiece(move, "w", "knight");
@@ -627,30 +636,39 @@ const promotion = (move, color) => {
   const promotions = { Q: "queen", N: "Night", B: "bishop", R: "rook" };
   let promotion = move.split("=")[1];
   move = move.split("=")[0];
+  resetHighlight();
   if (color == "w") {
     squares[getKeyByValue(chessBoardNumbers, move[0] + "7")].innerHTML = "";
+    squares[getKeyByValue(chessBoardNumbers, move[0] + "7")].style.boxShadow =
+      highlight;
   } else if (color == "b") {
     squares[getKeyByValue(chessBoardNumbers, move[0] + "2")].innerHTML = "";
+    squares[getKeyByValue(chessBoardNumbers, move[0] + "2")].style.boxShadow =
+      highlight;
   }
   squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
     chessPieces[`${color}-${promotions[promotion]}`];
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
 };
 
 // which piece should move
 const whichpiece = (move, color, piece) => {
   let letters = false;
   for (let i = 0; i < squares.length; i++) {
+    squares[i].style.boxShadow = "none";
     if (
       chessBoardNumbers[i][0] == move[1] &&
       squares[i].innerHTML == chessPieces[`${color}-${piece}`]
     ) {
       letters = true;
       squares[i].innerHTML = "";
+      squares[i].style.boxShadow = highlight;
     } else if (
       chessBoardNumbers[i][1] == move[1] &&
       squares[i].innerHTML == chessPieces[`${color}-${piece}`]
     ) {
       squares[i].innerHTML = "";
+      squares[i].style.boxShadow = highlight;
     }
   }
   squares[
@@ -659,10 +677,17 @@ const whichpiece = (move, color, piece) => {
       move[move.length - 2] + move[move.length - 1]
     )
   ].innerHTML = chessPieces[`${color}-${piece}`];
+  squares[
+    getKeyByValue(
+      chessBoardNumbers,
+      move[move.length - 2] + move[move.length - 1]
+    )
+  ].style.boxShadow = highlight;
 };
 
 // pawn capturing
 const pawnCapturing = (move, color) => {
+  resetHighlight();
   // en passant
   if (
     squares[
@@ -682,9 +707,21 @@ const pawnCapturing = (move, color) => {
     squares[
       getKeyByValue(
         chessBoardNumbers,
+        move[move.length - 2] + move[move.length - 1] - 1
+      )
+    ].style.boxShadow = highlight;
+    squares[
+      getKeyByValue(
+        chessBoardNumbers,
         move[move.length - 2] + move[move.length - 1]
       )
     ].innerHTML = chessPieces[`${color}-pawn`];
+    squares[
+      getKeyByValue(
+        chessBoardNumbers,
+        move[move.length - 2] + move[move.length - 1]
+      )
+    ].style.boxShadow = highlight;
   } else if (
     squares[
       getKeyByValue(
@@ -703,19 +740,37 @@ const pawnCapturing = (move, color) => {
     squares[
       getKeyByValue(
         chessBoardNumbers,
+        move[move.length - 2] + (parseInt(move[move.length - 1]) + 1)
+      )
+    ].style.boxShadow = highlight;
+    squares[
+      getKeyByValue(
+        chessBoardNumbers,
         move[move.length - 2] + move[move.length - 1]
       )
     ].innerHTML = chessPieces[`${color}-pawn`];
+    squares[
+      getKeyByValue(
+        chessBoardNumbers,
+        move[move.length - 2] + move[move.length - 1]
+      )
+    ].style.boxShadow = highlight;
   } else {
     if (color == "w") {
       squares[
         getKeyByValue(chessBoardNumbers, move[0] + (move[3] - 1))
       ].innerHTML = "";
+      squares[
+        getKeyByValue(chessBoardNumbers, move[0] + (move[3] - 1))
+      ].style.boxShadow = highlight;
     }
     if (color == "b") {
       squares[
         getKeyByValue(chessBoardNumbers, move[0] + (parseInt(move[3]) + 1))
       ].innerHTML = "";
+      squares[
+        getKeyByValue(chessBoardNumbers, move[0] + (parseInt(move[3]) + 1))
+      ].style.boxShadow = highlight;
     }
     squares[
       getKeyByValue(
@@ -723,15 +778,24 @@ const pawnCapturing = (move, color) => {
         move[move.length - 2] + move[move.length - 1]
       )
     ].innerHTML = chessPieces[`${color}-pawn`];
+    squares[
+      getKeyByValue(
+        chessBoardNumbers,
+        move[move.length - 2] + move[move.length - 1]
+      )
+    ].style.boxShadow = highlight;
   }
 };
 
 // moving a pawn
 const pawnMoves = (move, Index) => {
+  resetHighlight();
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
   if (Index % 2 == 0) {
     squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
       chessPieces["w-pawn"];
     for (let i = parseInt(move.split("")[1]) - 1; i > 0; i--) {
+      squares[i].style.boxShadow = "none";
       if (
         squares[getKeyByValue(chessBoardNumbers, move.split("")[0] + i)]
           .innerHTML == chessPieces["w-pawn"]
@@ -739,6 +803,9 @@ const pawnMoves = (move, Index) => {
         squares[
           getKeyByValue(chessBoardNumbers, move.split("")[0] + i)
         ].innerHTML = "";
+        squares[
+          getKeyByValue(chessBoardNumbers, move.split("")[0] + i)
+        ].style.boxShadow = highlight;
       }
     }
   } else {
@@ -752,6 +819,9 @@ const pawnMoves = (move, Index) => {
         squares[
           getKeyByValue(chessBoardNumbers, move.split("")[0] + i)
         ].innerHTML = "";
+        squares[
+          getKeyByValue(chessBoardNumbers, move.split("")[0] + i)
+        ].style.boxShadow = highlight;
       }
     }
   }
@@ -760,6 +830,7 @@ const pawnMoves = (move, Index) => {
 // moving a night
 const knightMoves = (move, color) => {
   for (let i = 0; i < squares.length; i++) {
+    squares[i].style.boxShadow = "none";
     if (squares[i].innerHTML == chessPieces[`${color}-knight`]) {
       possibleMoves.knight.forEach((element) => {
         if (
@@ -770,11 +841,13 @@ const knightMoves = (move, color) => {
               element[1]
         ) {
           squares[i].innerHTML = "";
+          squares[i].style.boxShadow = highlight;
         }
       });
     }
   }
   // putting the piece in its place
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
   squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
     chessPieces[`${color}-knight`];
 };
@@ -782,6 +855,7 @@ const knightMoves = (move, color) => {
 // bichop moves
 const bishopMoves = (move, color) => {
   for (let i = 0; i < squares.length; i++) {
+    squares[i].style.boxShadow = "none";
     if (squares[i].innerHTML == chessPieces[`${color}-bishop`]) {
       possibleMoves.bishop.forEach((element) => {
         if (
@@ -792,6 +866,7 @@ const bishopMoves = (move, color) => {
               element[1]
         ) {
           squares[i].innerHTML = "";
+          squares[i].style.boxShadow = highlight;
         }
       });
     }
@@ -799,6 +874,7 @@ const bishopMoves = (move, color) => {
   // putting the piece in its place
   squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
     chessPieces[`${color}-bishop`];
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
 };
 
 // get the closest castle to move to the square of the move
@@ -884,21 +960,24 @@ const closest = (move, color) => {
     // remove the closest castle vertically
     steps != 0 ? (squares[steps].innerHTML = "") : null;
   } else {
-    // remove the closest castle horisontaly
+    // remove the closest castle horizontaly
     squares[moveNumb + steps].innerHTML = "";
   }
 };
 // rook moves
 const rookMoves = (move, color) => {
+  resetHighlight();
   // removing the closest piece
   closest(move, color);
   // putting the piece on its place
   squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
     chessPieces[`${color}-rook`];
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
 };
 
 // the castling move
 const castling = (move, color) => {
+  resetHighlight();
   if (color == "b") {
     canCastle["k"] = false;
     canCastle["q"] = false;
@@ -912,15 +991,23 @@ const castling = (move, color) => {
       squares[getKeyByValue(chessBoardNumbers, "f8")].innerHTML =
         chessPieces["b-rook"];
       squares[getKeyByValue(chessBoardNumbers, "e8")].innerHTML = "";
+      squares[getKeyByValue(chessBoardNumbers, "e8")].style.boxShadow =
+        highlight;
       squares[getKeyByValue(chessBoardNumbers, "g8")].innerHTML =
         chessPieces["b-king"];
+      squares[getKeyByValue(chessBoardNumbers, "g8")].style.boxShadow =
+        highlight;
     } else {
       squares[getKeyByValue(chessBoardNumbers, "h1")].innerHTML = "";
       squares[getKeyByValue(chessBoardNumbers, "f1")].innerHTML =
         chessPieces["w-rook"];
       squares[getKeyByValue(chessBoardNumbers, "e1")].innerHTML = "";
+      squares[getKeyByValue(chessBoardNumbers, "e1")].style.boxShadow =
+        highlight;
       squares[getKeyByValue(chessBoardNumbers, "g1")].innerHTML =
         chessPieces["w-king"];
+      squares[getKeyByValue(chessBoardNumbers, "g1")].style.boxShadow =
+        highlight;
     }
   } else if (move == "O-O-O") {
     if (color == "b") {
@@ -928,15 +1015,23 @@ const castling = (move, color) => {
       squares[getKeyByValue(chessBoardNumbers, "d8")].innerHTML =
         chessPieces["b-rook"];
       squares[getKeyByValue(chessBoardNumbers, "e8")].innerHTML = "";
+      squares[getKeyByValue(chessBoardNumbers, "e8")].style.boxShadow =
+        highlight;
       squares[getKeyByValue(chessBoardNumbers, "c8")].innerHTML =
         chessPieces["b-king"];
+      squares[getKeyByValue(chessBoardNumbers, "c8")].style.boxShadow =
+        highlight;
     } else if (color == "w") {
       squares[getKeyByValue(chessBoardNumbers, "a1")].innerHTML = "";
       squares[getKeyByValue(chessBoardNumbers, "d1")].innerHTML =
         chessPieces["w-rook"];
       squares[getKeyByValue(chessBoardNumbers, "e1")].innerHTML = "";
+      squares[getKeyByValue(chessBoardNumbers, "e1")].style.boxShadow =
+        highlight;
       squares[getKeyByValue(chessBoardNumbers, "c1")].innerHTML =
         chessPieces["w-king"];
+      squares[getKeyByValue(chessBoardNumbers, "c1")].style.boxShadow =
+        highlight;
     }
   }
 };
@@ -948,6 +1043,7 @@ const queenMoves = (move, color) => {
     possibleMoves.rook
   );
   for (let i = 0; i < squares.length; i++) {
+    squares[i].style.boxShadow = "none";
     if (squares[i].innerHTML == chessPieces[`${color}-queen`]) {
       queenPosibleMoves.forEach((element) => {
         if (
@@ -958,17 +1054,20 @@ const queenMoves = (move, color) => {
               element[1]
         ) {
           squares[i].innerHTML = "";
+          squares[i].style.boxShadow = highlight;
         }
       });
     }
   }
   squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
     chessPieces[`${color}-queen`];
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
 };
 
 // king moves
 const kingMoves = (move, color) => {
   for (let i = 0; i < squares.length; i++) {
+    squares[i].style.boxShadow = "none";
     if (squares[i].innerHTML == chessPieces[`${color}-king`]) {
       possibleMoves.king.forEach((element) => {
         if (
@@ -979,12 +1078,14 @@ const kingMoves = (move, color) => {
               element[1]
         ) {
           squares[i].innerHTML = "";
+          squares[i].style.boxShadow = highlight;
         }
       });
     }
   }
   squares[getKeyByValue(chessBoardNumbers, move)].innerHTML =
     chessPieces[`${color}-king`];
+  squares[getKeyByValue(chessBoardNumbers, move)].style.boxShadow = highlight;
 };
 
 // extracting the pgn data
@@ -1006,26 +1107,31 @@ pgnData.pop();
 
 // displaying the pgn data
 let count = 1;
-for (let i = 0; i < pgnData.length; i++) {
-  if (i % 2 == 0) {
-    document.querySelector(
-      "#game-data"
-    ).innerHTML += `<span class='count'>${count}.</span>`;
-    count++;
-  }
+let falsePgnData = [...pgnData];
+while (falsePgnData.length > 0) {
   document.querySelector(
     "#game-data"
-  ).innerHTML += `<span class='move'>${pgnData[i]}</span>`;
+  ).innerHTML += `<div class ="move-set"><span class='count'>${count}.</span> <div class="moves"><span class='move'>${
+    falsePgnData[0]
+  }</span>${
+    falsePgnData[1] == undefined
+      ? `<span class='score'>${score}</span>`
+      : `<span class='move'>${falsePgnData[1]}</span>`
+  }</div></div>`;
+  falsePgnData.shift();
+  falsePgnData.shift();
+  count++;
 }
 
 // displaying the score
-document.querySelector("#game-data").innerHTML += `<span class='score'>${
-  pgnData[pgnData.length - 2] != undefined &&
-  pgnData[pgnData.length - 1] != undefined
-    ? score
-    : "no data in the URL"
-}</span>`;
-
+if (document.querySelector(".score") == null) {
+  document.querySelector("#game-data").innerHTML += `<span class='score'>${
+    pgnData[pgnData.length - 2] != undefined &&
+    pgnData[pgnData.length - 1] != undefined
+      ? score
+      : "no data in the URL"
+  }</span>`;
+}
 // getting the index of the current move
 const getIndex = () => {
   for (let i = 0; i < document.querySelectorAll(".move").length; i++) {
@@ -1076,6 +1182,9 @@ const autoplay = (i) => {
       }
     }
     setTimeout(() => {
+      if (getIndex() % 2 && getIndex() != 0) {
+        document.querySelector("#game-data").scrollBy(0, 45);
+      }
       autoplay(getIndex() + 1);
     }, 1000);
   }
@@ -1124,8 +1233,56 @@ document.querySelector("#next").onclick = () => {
       }
     }
   }
+  scrollDown();
 };
-
+document.addEventListener("keydown", (event) => {
+  if (event.keyCode == 37) {
+    playing = false;
+    let i = getIndex();
+    i--;
+    if (i < document.querySelectorAll(".move").length && i >= 0) {
+      resetBoard();
+      document.querySelectorAll(".move").forEach((move) => {
+        move.classList.remove("selected");
+      });
+      document.querySelectorAll(".move")[i].classList.add("selected");
+      let move = document.querySelectorAll(".move")[i];
+      if (i == 0) {
+        playMoves(move.innerHTML, i);
+      } else {
+        for (let x = 0; x <= i; x++) {
+          playMoves(pgnData[x], x);
+        }
+      }
+    } else if (i <= 0) {
+      document.querySelectorAll(".move").forEach((move) => {
+        move.classList.remove("selected");
+      });
+      resetBoard();
+    }
+    scrollUp();
+  } else if (event.keyCode == 39) {
+    playing = false;
+    let i = getIndex();
+    i++;
+    if (i < document.querySelectorAll(".move").length) {
+      resetBoard();
+      document.querySelectorAll(".move").forEach((move) => {
+        move.classList.remove("selected");
+      });
+      document.querySelectorAll(".move")[i].classList.add("selected");
+      let move = document.querySelectorAll(".move")[i];
+      if (i == 0) {
+        playMoves(move.innerHTML, i);
+      } else {
+        for (let x = 0; x <= i; x++) {
+          playMoves(pgnData[x], x);
+        }
+      }
+    }
+    scrollDown();
+  }
+});
 // displaying the previouse move after clicking on the previous button <<
 document.querySelector("#previous").onclick = () => {
   playing = false;
@@ -1151,14 +1308,14 @@ document.querySelector("#previous").onclick = () => {
     });
     resetBoard();
   }
+  scrollUp();
 };
-// puting the pieces on their starting place on the board
 window.onload = (event) => {
   resetBoard();
 };
 
 // get best moves
-const getResponse = async (fen) => {
+const getResponse = async () => {
   let getData;
   await fetch(`https://chess-evaluation-api.onrender.com/${fen}`)
     .then((response) => {
@@ -1170,21 +1327,51 @@ const getResponse = async (fen) => {
     .then((data) => {
       getData = data;
     });
-  let count = 1;
-  console.log(JSON.stringify(getData));
-  console.log(JSON.stringify(getData.moves));
-  let bestmoves = await getData.moves;
-  document.querySelector("#best-moves").innerHTML = "";
-  for (let i = 0; i < (await bestmoves.length); i++) {
-    if (i % 2 == 0) {
-      document.querySelector(
-        "#best-moves"
-      ).innerHTML += `<span class='count'>${count}.</span>`;
-      count++;
+  if (getData.error == undefined) {
+    const uci = getData[0].uci;
+    const bestmove = uci[0];
+    const score = getData[0].score.value;
+    let sequance = "";
+    if (uci.length >= 5) {
+      for (let i = 0; i < 5; i++) {
+        sequance += `<span>${uci[i]} </span>`;
+      }
+    } else {
+      uci.forEach((move) => {
+        sequance += `<span class = "best-moves">${move} </span>`;
+      });
     }
-    console.log(bestmoves[i]);
+    document.querySelector("#best-moves").innerHTML =
+      sequance + ` <span class="score">score: ${score} </span>`;
+  } else {
     document.querySelector(
       "#best-moves"
-    ).innerHTML += `<span class='move' >${JSON.stringify(bestmoves[i])}</span>`;
+    ).innerHTML = `<span> error no data found </span>`;
+  }
+};
+const copyText = () => {
+  const alert = document.querySelector(".alert");
+  let range = document.createRange();
+  range.selectNode(document.getElementById("FEN"));
+  window.getSelection().removeAllRanges(); // clear current selection
+  window.getSelection().addRange(range); // to select text
+  document.execCommand("copy");
+  window.getSelection().removeAllRanges(); // to deselect
+  alert.innerHTML = `Text byl zkopírován do schránky: ${fen}`;
+  alert.classList.add("active");
+  setTimeout(() => {
+    alert.classList.remove("active");
+  }, 2000);
+};
+
+const scrollDown = () => {
+  if (getIndex() % 2 == 0 && getIndex() != 0) {
+    document.querySelector("#game-data").scrollBy(0, 45);
+  }
+};
+
+const scrollUp = () => {
+  if (getIndex() % 2 == 0 && getIndex() != pgnData[pgnData.length - 1]) {
+    document.querySelector("#game-data").scrollBy(0, -45);
   }
 };
